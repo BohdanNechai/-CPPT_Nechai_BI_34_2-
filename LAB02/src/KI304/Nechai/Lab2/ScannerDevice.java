@@ -30,6 +30,29 @@ public class ScannerDevice  {
         throw new RuntimeException("Scanner should have characteristics");
     }
 
+    public void setMade(String made){
+        characteristics.setMade(made);
+        fout.print("The made is now: " + characteristics.getMade() + "\n");
+        fout.flush();
+    }
+
+    public void setBrandRegistrationCountry(String BrandRegCountry){
+        characteristics.setBrandRegistrationCountry(BrandRegCountry);
+        fout.print("The Brand registration country now is: " + characteristics.getBrandRegistrationCountry() + "\n");
+        fout.flush();
+    }
+
+    public void setFormat(String format){
+        characteristics.setFormat(format);
+        fout.print("The format now is : " + characteristics.getFormat() + "\n");
+        fout.flush();
+    }
+    public void setPurpose(String purpose){
+        characteristics.setPurpose(purpose);
+        fout.print("The purpose now is for: " + characteristics.getPurpose() + "\n");
+        fout.flush();
+    }
+
     public void performSelfTest() {
 
         if (!started) {
@@ -63,7 +86,10 @@ public class ScannerDevice  {
     public void startOrStopScanner(boolean started) {
 
        if (!started) {
-            System.out.println("Scanner did not start because the 'started' flag is false.");
+            Scan scanProcces = new Scan();
+            fout.print("Scanner is turned off\n");
+            fout.flush();
+            scanProcces.StopScanner(stop);
             this.started = started;
             return;
         }
@@ -79,17 +105,20 @@ public class ScannerDevice  {
 
     }
 
-    public void executeScan(String purpose) {
+    public void executeScan(String purpose,String format) {
         if (!started) {
             throw new RuntimeException("You need to start scanner first");
-        } else
+        } else {
             checkAndUpdateFirmware();
 
+            fout.print("Scan is processing\n");
+            fout.print("Successfull!\n");
+
             Scan scanProccess = new Scan();
-            scanProccess.scan(scan, characteristics, purpose);
+            scanProccess.scan(scan, characteristics, purpose,format);
         }
 
-
+    }
     private void updateFirmware(){
         System.out.println("Updating..");
         fout.print("Updating..\n");
@@ -98,37 +127,28 @@ public class ScannerDevice  {
     }
 
     private void checkAndUpdateFirmware() {
-        Scanner scan = null;
-        try {
+        Scanner scanner = new Scanner(System.in);
             if (getFirmwareYear() < 2024) {
                 System.out.println("Firmware year is " + getFirmwareYear());
                 System.out.println("Do you want to update it? (1 - yes, 2 - no) ");
                 fout.print("Firmware year is " + getFirmwareYear() + "\n");
                 fout.print("Do you want to update it? (1 - yes, 2 - no)\n");
                 fout.flush();
-                scan = new Scanner(System.in);
-                int upd = scan.nextInt();
+                scanner = new Scanner(System.in);
+                int upd = scanner.nextInt();
 
                 if (upd == 1) {
+                    fout.print("YES\n");
                     updateFirmware();
                 } else {
+                    fout.print("NO\n");
                     fout.print("Updating cancelled\n");
                     System.out.println("Updating cancelled");
                     fout.flush();
                 }
             }
-        } finally {
-            if (scan != null) {
-                scan.close();
-            }
-        }
-    }
 
-    public void getInfoAboutScanner(){
-       System.out.println(characteristics.toString() + " " + getFirmwareYear());
-       fout.print(characteristics.toString() + " " + getFirmwareYear() + "\n");
-       fout.flush();
-   }
+    }
 
     @Override
     public String toString() {
@@ -157,6 +177,7 @@ class Characteristics{
     public void setMade(String made) {
         this.made = made;
         System.out.println("The made is now by: " + this.made);
+
     }
 
     public String getPurpose() {
@@ -222,15 +243,14 @@ class Scan {
         }else System.out.println("Error");
     }
 
-    public void scan(Button b, Characteristics c, String purpose){
+    public void scan(Button b, Characteristics c, String purpose,String format){
         if(b.getButton().equals("Scan")){
-            if(c.getPurpose().equals(purpose)){
+            if(c.getPurpose().equals(purpose) && c.getFormat().equals(format)){
                 System.out.println("Scan is processing");
                 System.out.println("Successful!");
+
             }else System.out.println("Scanner not purposed for this type");
         }else System.out.println("Unknown error");
-
-
 
     }
 }

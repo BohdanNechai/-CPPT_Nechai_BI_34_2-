@@ -11,9 +11,17 @@ public class Main {
        scanner.startOrStopScanner(true);
        scanner.resetScanner();
        scanner.performSelfTest();
-       scanner.executeScan("Documents");
+       scanner.executeScan("Documents","A4");
+       scanner.startOrStopScanner(false);
+
+       scanner.startOrStopScanner(true);
+       scanner.setPurpose("Photos");
+       scanner.setFormat("A3");
+       scanner.executeScan("Photos","A3");
+       scanner.startOrStopScanner(false);
 
        System.out.println(scanner);
+
 
 
     }

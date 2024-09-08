@@ -3,5 +3,19 @@ Scanner is reset to factory settings
 Scanner preparing for self-test 
 Firmware year is 2020
 Do you want to update it? (1 - yes, 2 - no)
+NO
+Updating cancelled
+Scan is processing
+Successfull!
+Scanner is turned off
+Scanner is started
+The purpose now is for: Photos
+The format now is : A3
+Firmware year is 2020
+Do you want to update it? (1 - yes, 2 - no)
+YES
 Updating..
-ScannerDevice: Canon, A4, Documents, Japan, Firmware Year: 2024
+Scan is processing
+Successfull!
+Scanner is turned off
+ScannerDevice: Canon, A3, Photos, Japan, Firmware Year: 2024
