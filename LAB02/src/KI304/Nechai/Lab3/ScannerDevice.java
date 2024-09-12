@@ -1,13 +1,14 @@
-package KI304.Nechai.Lab2;
+package KI304.Nechai.Lab3;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
-public class ScannerDevice  {
-
+public abstract class ScannerDevice  {
     //Поля на основі створенних класів
+    private String name;
     private final Button stop;
     private final Button start;
     private final Button scan;
@@ -17,9 +18,18 @@ public class ScannerDevice  {
     private int firmwareYear;
     private PrintWriter fout;
 
+    // Геттер і Сеттер для String name
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     //Конструктор, який приймає об`єкт типу Characteristics і рік прошивки
     public ScannerDevice(Characteristics characteristics, int firmwareYear) throws FileNotFoundException {
-        //Кнопки пристрою
+        name = "Scanner";
         stop = new Button("Stop");
         start = new Button("Start");
         scan = new Button("Scan");
@@ -31,7 +41,7 @@ public class ScannerDevice  {
     }
 
     public ScannerDevice() throws FileNotFoundException  {
-        throw new RuntimeException("Scanner should have characteristics");
+        throw new RuntimeException(getName() + " should have characteristics");
     }
 
     //Методи Setter`и для зміни характеристик пристрою
@@ -41,21 +51,17 @@ public class ScannerDevice  {
         fout.flush();
     }
 
-
     public void setBrandRegistrationCountry(String BrandRegCountry){
         characteristics.setBrandRegistrationCountry(BrandRegCountry);
         fout.print("The Brand registration country now is: " + characteristics.getBrandRegistrationCountry() + "\n");
         fout.flush();
     }
 
-
     public void setFormat(String format){
         characteristics.setFormat(format);
         fout.print("The format now is : " + characteristics.getFormat() + "\n");
         fout.flush();
     }
-
-
     public void setPurpose(String purpose){
         characteristics.setPurpose(purpose);
         fout.print("The purpose now is for: " + characteristics.getPurpose() + "\n");
@@ -66,14 +72,13 @@ public class ScannerDevice  {
     public void performSelfTest() {
 
         if (!started) {
-            throw new RuntimeException("Scanner cannot perform self-test, because it is off");
+            throw new RuntimeException(getName() + " cannot perform self-test, because it is off");
 
-        } else {System.out.println("Scanner preparing for self-test");
-            fout.print("Scanner preparing for self-test \n");
+        } else {System.out.println(getName() + " preparing for self-test");
+            fout.print(getName() + " preparing for self-test \n");
             fout.flush();
         }
     }
-
 
     public int getFirmwareYear() {
         return firmwareYear;
@@ -83,24 +88,24 @@ public class ScannerDevice  {
         this.firmwareYear = firmwareYear;
     }
 
-    //Метод для скидання пристрою до заводських налаштувань
-   public void resetScanner(){
-       if(!started){
-           throw new RuntimeException("To reset scanner, you need start it first");
+    // Метод для скидання пристрою до заводських налаштувань
+    public void resetScanner(){
+        if(!started){
+            throw new RuntimeException("To reset " + getName() + " scanner, you need start it first");
 
-       }else {
-           System.out.println("Scanner is reset to factory settings");
-           fout.print("Scanner is reset to factory settings\n");
-           fout.flush();
-       }
-   }
+        }else {
+            System.out.println(getName() +" is reset to factory settings");
+            fout.print(getName() + "  is reset to factory settings\n");
+            fout.flush();
+        }
+    }
 
     // Старт або зупинка сканеру True - старт, False -stop
     public void startOrStopScanner(boolean started) {
 
-       if (!started) {
+        if (!started) {
             Scan scanProcces = new Scan();
-            fout.print("Scanner is turned off\n");
+            fout.print(getName() +"  is turned off\n");
             fout.flush();
             scanProcces.StopScanner(stop);
             this.started = started;
@@ -108,7 +113,7 @@ public class ScannerDevice  {
         }
 
         if (started) {
-            fout.print("Scanner is started\n");
+            fout.print(getName() +"  is started\n");
             fout.flush();
             Scan scanProccess = new Scan();
             scanProccess.StartScanner(start);
@@ -121,7 +126,7 @@ public class ScannerDevice  {
     // Власне сам процес сканування
     public void executeScan(String purpose,String format) {
         if (!started) {
-            throw new RuntimeException("You need to start scanner first");
+            throw new RuntimeException("You need to start " + getName() + "  first");
         } else {
             checkAndUpdateFirmware();
 
@@ -133,7 +138,6 @@ public class ScannerDevice  {
         }
 
     }
-
     // Процес оновлення прошивки
     private void updateFirmware(){
         System.out.println("Updating..");
@@ -145,37 +149,35 @@ public class ScannerDevice  {
     // Перевірка на рік прошивкиі запит користувавча на згоду оновлення
     private void checkAndUpdateFirmware() {
         Scanner scanner = new Scanner(System.in);
-            if (getFirmwareYear() < 2024) {
-                System.out.println("Firmware year is " + getFirmwareYear());
-                System.out.println("Do you want to update it? (1 - yes, 2 - no) ");
-                fout.print("Firmware year is " + getFirmwareYear() + "\n");
-                fout.print("Do you want to update it? (1 - yes, 2 - no)\n");
-                fout.flush();
-                scanner = new Scanner(System.in);
-                int upd = scanner.nextInt();
+        if (getFirmwareYear() < 2024) {
+            System.out.println("Firmware year is " + getFirmwareYear());
+            System.out.println("Do you want to update it? (1 - yes, 2 - no) ");
+            fout.print("Firmware year is " + getFirmwareYear() + "\n");
+            fout.print("Do you want to update it? (1 - yes, 2 - no)\n");
+            fout.flush();
+            scanner = new Scanner(System.in);
+            int upd = scanner.nextInt();
 
-                if (upd == 1) {
-                    fout.print("YES\n");
-                    updateFirmware();
-                } else {
-                    fout.print("NO\n");
-                    fout.print("Updating cancelled\n");
-                    System.out.println("Updating cancelled");
-                    fout.flush();
-                }
+            if (upd == 1) {
+                fout.print("YES\n");
+                updateFirmware();
+            } else {
+                fout.print("NO\n");
+                fout.print("Updating cancelled\n");
+                System.out.println("Updating cancelled");
+                fout.flush();
             }
+        }
 
     }
 
-    // Метод toString
-    @Override
+    @Override // Метод toString
     public String toString() {
-        fout.print("ScannerDevice: " + characteristics.toString() + ", Firmware Year: " + getFirmwareYear() + "\n");
+        fout.print(getName() + ": "  + characteristics.toString() + ", Firmware Year: " + getFirmwareYear() + "\n");
         fout.flush();
-        return "ScannerDevice: " + characteristics.toString() + ", Firmware Year: " + getFirmwareYear();
+        return getName() + ": " + characteristics.toString() + ", Firmware Year: " + getFirmwareYear();
     }
 }
-
 class Characteristics{
     private String made;
     private String purpose;
@@ -237,7 +239,6 @@ class Characteristics{
 
 // Клас для кнопок пристрою
 class Button{
-
     private String button;
 
     Button(String button){
