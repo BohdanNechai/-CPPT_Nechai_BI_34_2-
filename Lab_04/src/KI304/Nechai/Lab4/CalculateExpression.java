@@ -7,9 +7,19 @@ import java.util.Scanner;
 
 import static java.lang.System.out;
 
-//y=tg(x)/(sin(4x) – 2cos(x)) це мій вираз
+/**
+ *
+ * y=tg(x)/(sin(4x) – 2cos(x)) це мій вираз
+ *
+ */
 
 public class CalculateExpression {
+    /**
+     *
+     * @param args args
+     * @throws FileNotFoundException if file not found
+     */
+
     public static void main(String[] args) throws FileNotFoundException {
         try
         {
@@ -47,7 +57,8 @@ public class CalculateExpression {
     }
 }
 
-    class CalcException extends ArithmeticException
+
+class CalcException extends ArithmeticException
     {
         public CalcException(){}
         public CalcException(String cause)
@@ -55,7 +66,15 @@ public class CalculateExpression {
             super(cause);
         }
     }
+
 class Equations{
+    /**
+     *
+     * @param x parameter
+     * @return return res
+     * @throws CalcException throws exception
+     *
+     */
         public double calculate(int x) throws CalcException{
             double y,rad;
             rad = x * Math.PI / 180.0;
@@ -67,7 +86,7 @@ class Equations{
             }
             catch (ArithmeticException ex)
             {
-// створимо виключення вищого рівня з поясненням причини // виникнення помилки
+// створимо виключення вищого рівня з поясненням причини виникнення помилки
                 if (rad==Math.PI/2.0 || rad==-Math.PI/2.0)
                     throw new CalcException("Exception reason: Illegal value of X for tangent calculation");
                 else if (x==0)
